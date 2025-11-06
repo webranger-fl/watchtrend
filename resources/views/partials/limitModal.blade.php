@@ -5,25 +5,27 @@
           data-aria-hidden="true"
           aria-hidden="true"
         ></div>
-        <div role="dialog" id="dialog_wrap" {{--id="radix-:r0:"--}} aria-describedby="radix-:r2:" aria-labelledby="radix-:r1:" data-state="open" 
-        class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg 
+        <div role="dialog" style="overflow-y:auto;pointer-events: auto;" id="dialog_wrap" {{--id="radix-:r0:"--}} aria-describedby="radix-:r2:" aria-labelledby="radix-:r1:" data-state="open" 
+        class="py-5 fixed left-[50%] top-[50%] z-50 grid w-full max-h-[90vh] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg 
         duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 
         data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 
-        data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-md" tabindex="-1" style="pointer-events: auto;">
+        data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-md" tabindex="-1">
         <div class="flex flex-col space-y-1.5 text-center sm:text-left">
           <div id="radix-:r1:" class="font-semibold tracking-tight text-2xl">Лимит запросов исчерпан</div>
-          <p id="radix-:r2:" class="text-muted-foreground text-base pt-4 space-y-3"><p>К сожалению, вы достигли максимального количества бесплатных запросов для гостевого
+          <p id="radix-:r2:" class="text-muted-foreground text-base pt-4 space-y-3"><p>{{--К сожалению, --}}Вы достигли максимального количества бесплатных запросов для гостевого
             доступа.</p>
           {{--<p class="font-semibold text-foreground">Зарегистрируйтесь и получите:</p>--}}
           <p class="font-semibold text-foreground">Скоро мы добавим личный кабинет что откроет следующие возможности:</p>
           <ul class="list-disc list-inside space-y-1 text-foreground/90">
             <li>Увеличенный лимит запросов</li>
             <li>Доступ к расширенной аналитике</li>
-            <li>Сравнение трендов</li>
+            {{--<li>Сравнение трендов</li>--}}
             <li>Создание и ведение проектов, возможность делиться проектами с другими пользователями</li>
             {{--<li>Сохранение истории поиска</li>
             <li>Персональные рекомендации</li>--}}
           </ul></p>
+          <p>Есть вопросы по использованию сервиса? Пишите разработчику проекта в ТГ - 
+            <a class="text-primary font-medium" href="https://t.me/webrangerr" target="_blank">@webrangerr</a></p>
         </div>
         <div class="flex sm:justify-end sm:space-x-2 flex-col sm:flex-row gap-2">
           <button id="dialog_close" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background 

@@ -120,7 +120,7 @@
       </div>
       @endif--}}
 
-      <div class="mt-6 grid grid-cols-2 gap-4">
+      <div class="mt-6 grid sm:grid-cols-2 gap-4">
 
       @if($addStats['ups_count'] > 0)
       <div
