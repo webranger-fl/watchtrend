@@ -1,0 +1,19 @@
+{
+  "resources/css/app.css": {
+    "file": "app-Cg4cNb4_.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "app-Cy98PJ2n.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/graph.js": {
+    "file": "graph-3B-yYEAA.js",
+    "name": "graph",
+    "src": "resources/js/graph.js",
+    "isEntry": true
+  }
+}
