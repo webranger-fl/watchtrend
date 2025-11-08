@@ -1,7 +1,12 @@
 {
   "resources/css/app.css": {
-    "file": "app-CExOFoKn.css",
+    "file": "app-CKHnDqxf.css",
     "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/css/graph.css": {
+    "file": "graph-BV7ldQh0.css",
+    "src": "resources/css/graph.css",
     "isEntry": true
   },
   "resources/js/app.js": {
@@ -14,6 +19,12 @@
     "file": "graph-3B-yYEAA.js",
     "name": "graph",
     "src": "resources/js/graph.js",
+    "isEntry": true
+  },
+  "resources/js/graphs.js": {
+    "file": "graphs-D0CAyxa_.js",
+    "name": "graphs",
+    "src": "resources/js/graphs.js",
     "isEntry": true
   }
 }

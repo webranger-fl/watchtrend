@@ -1,4 +1,10 @@
 <x-layout :header="false">
+  <x-slot:title>
+    {{config('app.name')}} - анализ и динамика поискового спроса
+  </x-slot>
+  <x-slot:desc>
+    {{config('app.name')}} - анализ и динамика поискового спроса. Кол-во запросов в поиске по месяцам за последний год по любой фразе.
+  </x-slot>
 
 <div class="min-h-screen bg-gradient-to-br from-background via-background to-secondary">
   

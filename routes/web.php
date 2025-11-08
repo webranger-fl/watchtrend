@@ -22,13 +22,20 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => $middleware
   Route::post('/', 'HomeController@analyze')->name('analyze');
   Route::post('/devices/{slug:slug}', 'HomeController@devices')->name('devices');
 
+  Route::group(['middleware' => ['auth']], function() {
+    Route::get('/my', 'MyController@index')->name('my');
+    Route::post('/my', 'MyController@addProject')->name('my.addProject');
+    Route::get('/project/{project}', 'MyController@project')->name('my.project');
+    Route::post('/project/{project}', 'MyController@addToProject')->name('my.project.add');
+  });
+
    //Route::get('/trends/oct-2025', 'TrendsController@index')->name('trends');
 
   Route::get('/key/{slug:slug}', 'KeyController@index')->name('key');
   Route::get('/data/{slug:slug}', 'KeyController@data')->name('data');
   //Route::get('/compare/{slug1:slug}/{slug2:slug}', 'CompareController@index')->name('compare');
 
-  Route::get('/signup', 'UserController@index')->name('signup');
+  //Route::get('/signup', 'UserController@index')->name('signup');
 
 /*Route::get('/', 'BlogController@index')->name('blog');
 Route::get('/search', 'BlogController@search')->name('blog.search');
