@@ -25,6 +25,9 @@ class WordstatPhrase extends Model
     })
     ->orderByDesc('date');
    }
+   public function projects() {
+    return $this->belongsToMany(Project::class, 'project_phrases', 'phrase_id', 'project_id', 'id', 'id');
+  }
 
    public function calcStats() {
     $hasDevicesStats = false;

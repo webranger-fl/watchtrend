@@ -28,13 +28,20 @@ class MyController extends Controller
       //dd($project);
       //dd($project->phrases);
       $project = Project::where(['id' => $project->id])->with('phrases.stats')->withCount('phrases')->first();
-      return view('project.single', compact('project'));
+      $phrases = WordstatPhrase::whereHas('projects', function($q) use ($project) {
+        $q->where('projects.id', '=', $project->id);
+      })->has('stats')->get();
+      //dd($phrases);
+      return view('project.single', compact('project', 'phrases'));
     }
 
     public function projectData(Project $project)
     {
+      $phrases = WordstatPhrase::whereHas('projects', function($q) use ($project) {
+        $q->where('projects.id', '=', $project->id);
+      })->has('stats')->get();
       $stats = [];
-      foreach($project->phrases as $ph) {
+      foreach($phrases as $ph) {
         //$stats[] = $ph->stats;
         $innerStats = [];
         foreach($ph->stats as $stat) {
@@ -69,12 +76,19 @@ class MyController extends Controller
         $dbPhrase = WordstatPhrase::where(['phrase' => $p])->first();
         if(!$dbPhrase) {
           // для новых фраз в очередь кидать запрос за данными
+          DB::transaction(function () use ($p, $project) {
+            $slug = translit($p);
+            $phrase = WordstatPhrase::create(['phrase' => $p, 'slug' => $slug]);
+            ProjectPhrase::create(['project_id' => $project->id, 'phrase_id' => $phrase->id]);
+            \App\Jobs\FetchPhraseData::dispatch($phrase);
+          });        
         }
         else {
           ProjectPhrase::create(['project_id' => $project->id, 'phrase_id' => $dbPhrase->id]);
         }
       }
-      return redirect()->route('my.project', ['project' => $project->id]);
+      return redirect()->route('my.project', ['project' => $project->id])
+        ->with('msg', 'Фразы добавлены. Новые фразы отобразятся через 1-2 минуты, когда для них добавятся данные. Перезагрузите страницу');
     }
     
 }

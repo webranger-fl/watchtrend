@@ -108,7 +108,7 @@
   </div>
 
   <div class="mt-8 grid md:grid-cols-2 gap-6">
-      @foreach($project->phrases as $ph)
+      @foreach($phrases as $ph)
         <div class="rounded-lg border text-card-foreground p-3 sm:p-6 bg-card border-border shadow-lg">
 
         <h1 class="py-2 text-2xl md:text-3xl font-semibold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
