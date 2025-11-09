@@ -1,25 +1,38 @@
 async function loadData() {
   let projectId = window.location.pathname.replace('/project/', '')
-  //let response = await fetch(`/data/${slug}`)
+  let response = await fetch(`/data/project/${projectId}`)
   let data
-  console.log(projectId)
-  return
+  //console.log(projectId)
+  //return
 
    if (response.ok) { // если HTTP-статус в диапазоне 200-299
       // получаем тело ответа (см. про этот метод ниже)
       let json = await response.json();
       data = json.stats
       //console.log(data)
+      return json.stats
     } else {
       console.log("Ошибка HTTP: " + response.status);
       return
     }
 }
 
-loadData()
+async function loadCharts() {
+  let stats = await loadData()
+  //console.log(stats)
+  //return
+
+  stats.forEach((stat, idx) => {
+    let id = 'chart_' + (idx+1)
+    //console.log(id)
+    initChart(id, stats[idx])
+  })
+}
+
+loadCharts()
 //initChart('chart_1')
 
-async function initChart(id) {
+/*async*/ function initChart(id, data) {
 
   //return
 
@@ -99,12 +112,12 @@ function formatNumber(value) {
         // Функция создания графика
         function createChart() {
             // Очистка предыдущего графика
-            d3.select("#chart").selectAll("*").remove();
+            d3.select(`#${id}`).selectAll("*").remove();
             
             const { margin, width, height, isMobile, isSmallMobile, isVerySmallMobile } = getResponsiveDimensions();
             
             // Создание адаптивного SVG
-            const svg = d3.select("#chart")
+            const svg = d3.select(`#${id}`)
                 .append("svg")
                 .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
                 .attr("preserveAspectRatio", "xMidYMid meet")

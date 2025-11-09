@@ -77,6 +77,18 @@
               
             </button>
        @endif
+       @if((auth()->id() && auth()->user()->role === 'admin'))
+       <a href="{{route('my')}}"
+              class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none 
+              focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none 
+              [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 
+              {{--h-14--}} px-2 md:px-4 py-2 rounded-xl {{--text-lg--}} shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
+              type="submit"
+            >
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" /></svg>
+              
+            </a>
+       @endif
         {{--<nav class="flex items-center gap-6">
           <a class="text-sm font-medium transition-colors hover:text-primary text-primary" href="/">Главная</a
           >

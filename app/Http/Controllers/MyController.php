@@ -31,6 +31,23 @@ class MyController extends Controller
       return view('project.single', compact('project'));
     }
 
+    public function projectData(Project $project)
+    {
+      $stats = [];
+      foreach($project->phrases as $ph) {
+        //$stats[] = $ph->stats;
+        $innerStats = [];
+        foreach($ph->stats as $stat) {
+          $date = mb_ucfirst(ruMonth(strtotime($stat->date))) . " " . date('Y', strtotime($stat->date));
+          $date2 = mb_ucfirst(ruMonth(strtotime($stat->date))) . " " . date('y', strtotime($stat->date));
+          //dd($date2);
+          $innerStats[] = ['month' => $date, 'shortMonth' => $date2, 'value' => $stat->value];
+        }
+        $stats[] = $innerStats;
+      }
+      return ['stats' => $stats];
+    }
+
     public function addProject(Request $req)
     {
       //dd($req->all());

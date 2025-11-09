@@ -27,6 +27,7 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => $middleware
     Route::post('/my', 'MyController@addProject')->name('my.addProject');
     Route::get('/project/{project}', 'MyController@project')->name('my.project');
     Route::post('/project/{project}', 'MyController@addToProject')->name('my.project.add');
+    Route::get('/data/project/{project}', 'MyController@projectData')->name('my.project.data');
   });
 
    //Route::get('/trends/oct-2025', 'TrendsController@index')->name('trends');
