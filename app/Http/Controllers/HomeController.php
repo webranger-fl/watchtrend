@@ -55,7 +55,9 @@ class HomeController extends Controller
         //global $slug;
         $phrase = WordstatPhrase::create(['phrase' => $keyword, 'slug' => translit($keyword)]);
         $slug = $phrase->slug;
-        $fromDate = date('Y-m-d', time() - 86400 * 365);
+        // захватываем больше месяцев
+        $fromDate = date('Y-m-d', time() - 86400 * 500);
+        //$fromDate = date('Y-m-d', time() - 86400 * 365);
         //$fromDate = date('Y-m-d', time() - 86400 * 400);
         // получаем первое число месяца
         $fromDate = preg_replace("/[0-9]{2}$/", "01", $fromDate);
