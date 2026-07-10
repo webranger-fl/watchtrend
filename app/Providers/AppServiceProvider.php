@@ -24,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
       Http::macro('wordstatAPI', function () {
-        return Http::timeout(180)->baseUrl("https://api.wordstat.yandex.net")->withHeaders([
-          'Authorization' => 'Bearer ' . config('apis.yandex.wordstat_api_token'),
+        return Http::timeout(180)->baseUrl("https://searchapi.api.cloud.yandex.net/v2/wordstat")->withHeaders([
+          'Authorization' => 'Api-Key ' . config('apis.yandex.ai_studio_api_key'),
           'Content-Type' => 'application/json',
         ]);
       });

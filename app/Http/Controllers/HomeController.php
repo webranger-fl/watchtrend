@@ -63,7 +63,7 @@ class HomeController extends Controller
         $fromDate = preg_replace("/[0-9]{2}$/", "01", $fromDate);
         //dd($fromDate);
 
-        $req = Http::wordstatAPI()->post("/v1/dynamics", [
+        $req = Http::wordstatAPI()->post("/dynamics", [
           'phrase' => $keyword,
           'period' => 'monthly',
           // ровно год назад
@@ -117,7 +117,7 @@ class HomeController extends Controller
       dd($key->stat->date);*/
 
       foreach(['desktop', 'tablet', 'phone'] as $device) {
-        $req = Http::wordstatAPI()->post("/v1/dynamics", [
+        $req = Http::wordstatAPI()->post("/dynamics", [
         'phrase' => $key->phrase,
         'period' => 'monthly',
         //'fromDate' => $fromDate,
