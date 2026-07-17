@@ -33,7 +33,12 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => $middleware
    //Route::get('/trends/oct-2025', 'TrendsController@index')->name('trends');
 
   Route::get('/key/{slug:slug}', 'KeyController@index')->name('key');
+  Route::post('/key/{slug:slug}/update', 'KeyController@update')->name('key.update');
   Route::get('/data/{slug:slug}', 'KeyController@data')->name('data');
+
+  Route::group(['middleware' => ['auth']], function() {
+    Route::post('/key/{slug:slug}/analyze', 'KeyController@analyze')->name('key.analyze');
+  });
   //Route::get('/compare/{slug1:slug}/{slug2:slug}', 'CompareController@index')->name('compare');
 
   //Route::get('/signup', 'UserController@index')->name('signup');

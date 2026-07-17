@@ -8,6 +8,10 @@ class WordstatPhrase extends Model
 {
    protected $guarded = [];
 
+   protected $casts = [
+     'ai_analyzed_at' => 'datetime',
+   ];
+
    public function stats() {
     return $this->hasMany(WordstatPhraseStat::class, 'phrase_id', 'id')->where(['type' => 'monthly']);
    }

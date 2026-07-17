@@ -18,7 +18,48 @@
         Интерактивная визуализация популярности за период {{$firstMonth}} - {{$lastMonth}}
       </p>
 
+      @if(session('msg'))
+      <div class="mx-auto mt-3 max-w-2xl rounded-md border border-border bg-secondary/50 px-4 py-2 text-sm">
+        {{ session('msg') }}
+      </div>
+      @endif
+
+      @auth
+      @if(!empty($key->ai_analysis))
+      <details class="mx-auto mt-4 max-w-3xl text-left rounded-lg border border-border bg-card/60 backdrop-blur-sm shadow-sm group" @php $analyzedAt = $key->ai_analyzed_at ? \Carbon\Carbon::parse($key->ai_analyzed_at) : null; @endphp {{ $analyzedAt && $analyzedAt->gt(now()->subDay()) ? 'open' : '' }}>
+        <summary class="cursor-pointer select-none px-4 py-3 text-base font-semibold flex items-center justify-between hover:bg-secondary/40 rounded-lg">
+          <span class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-robot"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 6m0 4a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-4a4 4 0 0 1 -4 -4z" /><path d="M12 2v2" /><path d="M9 12v.01" /><path d="M15 12v.01" /><path d="M3 13l2 -2" /><path d="M3 9v-3" /><path d="M6 5l-2 -2" /><path d="M21 13l-2 -2" /><path d="M21 9v-3" /><path d="M18 5l2 -2" /></svg>
+            ИИ-анализ тренда
+          </span>
+          <span class="text-xs text-muted-foreground font-normal">
+            @if($analyzedAt) обновлено {{ $analyzedAt->format('d.m.Y H:i') }} @endif
+            <span class="group-open:hidden">— раскрыть</span>
+            <span class="hidden group-open:inline">— скрыть</span>
+          </span>
+        </summary>
+        <div class="px-4 pb-4 pt-1 text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-line">
+          {{ $key->ai_analysis }}
+        </div>
+      </details>
+      @endif
+      @endauth
+
       <div class="flex mt-2 gap-2 flex-wrap justify-center">
+        @if($showUpdate)
+        <form class="flex justify-center" method="POST" action="{{route('key.update', $key->slug)}}">
+          @csrf
+          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[250px]"
+          type="submit"
+          onclick="(function() {
+                    if(!confirm('Обновить данные по запросу?')) event.preventDefault();
+                  })();">
+            <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-refresh"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
+            Обновить
+          </button>
+        </form>
+        @endif
+
         @if(!$hasDevicesStats)
         <form class="flex justify-center" method="POST" action="{{route('devices', $key->slug)}}">
           @csrf
@@ -33,13 +74,27 @@
         </form>
         @endif
 
-        <button class="share_btn inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none 
-        focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 
-        [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 
+        <button class="share_btn inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none
+        focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
+        [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90
         text-sm px-4 py-2 rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
           <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M8.7 10.7l6.6 -3.4" /><path d="M8.7 13.3l6.6 3.4" /></svg>
           Поделиться
       </button>
+
+      @auth
+      <form class="flex justify-center" method="POST" action="{{route('key.analyze', $key->slug)}}">
+        @csrf
+        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[250px]"
+        type="submit"
+        onclick="(function() {
+                  if(!confirm('Получить ИИ-анализ тренда? Запрос будет отправлен в LLM и займёт несколько секунд.')) event.preventDefault();
+                })();">
+          <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-robot"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 6m0 4a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-4a4 4 0 0 1 -4 -4z" /><path d="M12 2v2" /><path d="M9 12v.01" /><path d="M15 12v.01" /><path d="M3 13l2 -2" /><path d="M3 9v-3" /><path d="M6 5l-2 -2" /><path d="M21 13l-2 -2" /><path d="M21 9v-3" /><path d="M18 5l2 -2" /></svg>
+          Получить ИИ анализ трендов
+        </button>
+      </form>
+      @endauth
       </div>
       
     </div>

@@ -23,6 +23,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+      Http::macro('polza', function () {
+        return Http::timeout(180)->baseUrl("https://api.polza.ai/api/v1/chat/completions")->withHeaders([
+          'Authorization' => 'Bearer ' . config('apis.polza_key'),
+          'Content-Type' => 'application/json',
+        ]);
+      });
+      
       Http::macro('wordstatAPI', function () {
         return Http::timeout(180)->baseUrl("https://searchapi.api.cloud.yandex.net/v2/wordstat")->withHeaders([
           'Authorization' => 'Api-Key ' . config('apis.yandex.ai_studio_api_key'),

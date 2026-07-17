@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 //use Stevebauman\Location\Facades\Location;
 use App\Helpers\Telegram;
+use DateTime; 
 
 class HomeController extends Controller
 {
@@ -56,18 +57,22 @@ class HomeController extends Controller
         $phrase = WordstatPhrase::create(['phrase' => $keyword, 'slug' => translit($keyword)]);
         $slug = $phrase->slug;
         // захватываем больше месяцев
-        $fromDate = date('Y-m-d', time() - 86400 * 500);
-        //$fromDate = date('Y-m-d', time() - 86400 * 365);
-        //$fromDate = date('Y-m-d', time() - 86400 * 400);
-        // получаем первое число месяца
-        $fromDate = preg_replace("/[0-9]{2}$/", "01", $fromDate);
+        $fromDate = (new DateTime())->modify('-500 days');
+        $fromDate->setDate($fromDate->format('Y'), $fromDate->format('m'), 1);
+        $fromDate->setTime(12, 34, 56);
+        $fromDate = $fromDate->format('Y-m-d\TH:i:sP');
+        //dd($fromDate);
+        //$fromDate = (new DateTime())->modify('-500 days');
+        //$fromDate->setDate($fromDate->format('Y'), $fromDate->format('m'), 1); // первый день месяца
+        //$fromDate->setTime(0, 0, 0); // начало суток
         //dd($fromDate);
 
         $req = Http::wordstatAPI()->post("/dynamics", [
           'phrase' => $keyword,
-          'period' => 'monthly',
+          'period' => 'PERIOD_MONTHLY',
           // ровно год назад
           'fromDate' => $fromDate,
+          'folderId' => 'b1g1gli0dfev7nrvm0bs',
           //'toDate' => date('Y-m-d'),
           // пока без regions, devices
         ]);
@@ -75,7 +80,7 @@ class HomeController extends Controller
         $body = json_decode($req->body());
         //dd($body);
         // тут конечно нужны проверки чтобы не добавлять повторные записи если уже есть + сразу вычисление процента изменения
-        foreach($body->dynamics as $idx => $d) {
+        foreach($body->results as $idx => $d) {
           $stat = WordstatPhraseStat::where(['phrase_id' => $phrase->id,'date' => $d->date,'type' => 'monthly'])->first();
           if($stat) continue;
           WordstatPhraseStat::create([
@@ -84,7 +89,7 @@ class HomeController extends Controller
             'value' => $d->count,
             'type' => 'monthly',
             //'percent_change' => $idx === 0 ? null : round((($d->count - $body->dynamics[$idx-1]->count) / ($body->dynamics[$idx-1]->count)) * 100)
-            'percent_change' => $idx === 0 ? null : calcPercentChange($d, $body->dynamics[$idx-1])
+            'percent_change' => $idx === 0 ? null : calcPercentChange($d, $body->results[$idx-1])
           ]);
         }
         if (auth()->guest()) {

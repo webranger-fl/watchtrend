@@ -13,26 +13,35 @@ class FetchPhraseData implements ShouldQueue
     use Queueable;
 
     public $phrase;
+    public $fromDate;
 
-    public function __construct($phrase)
+    public function __construct($phrase, $fromDate = null)
     {
        $this->phrase = $phrase;
+       $this->fromDate = $fromDate;
     }
 
     public function handle(): void
     {
-      $fromDate = date('Y-m-d', time() - 86400 * 365);
-      $fromDate = preg_replace("/[0-9]{2}$/", "01", $fromDate);
+      if($this->fromDate) {
+        $fromDate = $this->fromDate;
+      } else {
+        $fromDate = date('Y-m-d', time() - 86400 * 365);
+        $fromDate = preg_replace("/[0-9]{2}$/", "01", $fromDate);
+      }
+      //dd($fromDate);
 
-       $req = Http::wordstatAPI()->post("/v1/dynamics", [
+       $req = Http::wordstatAPI()->post("/dynamics", [
           'phrase' => $this->phrase->phrase,
-          'period' => 'monthly',
+          'period' => 'PERIOD_MONTHLY',
           'fromDate' => $fromDate,
+          'folderId' => 'b1g1gli0dfev7nrvm0bs',
         ]);
 
          $body = json_decode($req->body());
+         //dd($body);
 
-        foreach($body->dynamics as $idx => $d) {
+        foreach($body->results as $idx => $d) {
           $stat = WordstatPhraseStat::where(['phrase_id' => $this->phrase->id,'date' => $d->date,'type' => 'monthly'])->first();
           if($stat) continue;
           WordstatPhraseStat::create([
@@ -40,8 +49,8 @@ class FetchPhraseData implements ShouldQueue
             'date' => $d->date,
             'value' => $d->count,
             'type' => 'monthly',
-            //'percent_change' => $idx === 0 ? null : round((($d->count - $body->dynamics[$idx-1]->count) / ($body->dynamics[$idx-1]->count)) * 100)
-            'percent_change' => $idx === 0 ? null : $this->calcPercentChange($d, $body->dynamics[$idx-1])
+            //'percent_change' => $idx === 0 ? null : round((($d->count - $body->results[$idx-1]->count) / ($body->results[$idx-1]->count)) * 100)
+            'percent_change' => $idx === 0 ? null : $this->calcPercentChange($d, $body->results[$idx-1])
           ]);
         }
       

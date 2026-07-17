@@ -7,7 +7,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "google/apiclient": "*",
         "jenssegers/date": "*",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
@@ -38,7 +37,6 @@
         }
     },
     "scripts": {
-        "pre-autoload-dump": "Google\\Task\\Composer::cleanup",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
