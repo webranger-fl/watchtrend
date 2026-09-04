@@ -27,18 +27,23 @@ class FetchDevicesData implements ShouldQueue
      */
     public function handle(): void
     {
-        foreach(['desktop', 'tablet', 'phone'] as $device) {
-        $req = Http::wordstatAPI()->post("/v1/dynamics", [
+        foreach([
+          'desktop' => 'DEVICE_DESKTOP',
+          'tablet' => 'DEVICE_TABLET',
+          'phone' => 'DEVICE_PHONE',
+        ] as $device => $deviceType) {
+        $req = Http::wordstatAPI()->post("/dynamics", [
         'phrase' => $this->key->phrase,
-        'period' => 'monthly',
+        'period' => 'PERIOD_MONTHLY',
         //'fromDate' => $fromDate,
         'fromDate' => $this->key->stat->date,
-        'devices' => [$device]
+        'folderId' => 'b1g1gli0dfev7nrvm0bs',
+        'devices' => [$deviceType]
         ]);
 
         $body = json_decode($req->body());
 
-        foreach($body->dynamics as $d) {
+        foreach($body->results as $d) {
           $stat = WordstatPhraseStat::where(['phrase_id' => $this->key->id, 'date' => $d->date])->first();
           if(!$stat) continue;
           $stat->update([$device => $d->count]);
