@@ -29,6 +29,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Admin', 'prefix' => 'admin/',
   Route::patch('/wordstatPhrases/{wordstatPhrase}/devices', 'WordstatPhraseController@getDevicesData')->name('admin.wordstatPhrase.getDevicesData');
 
   Route::get('/logs-not-found', 'LogsController@logsNotFound')->name('admin.logsNotFound');
+  Route::get('/logs/{log}', 'LogsController@show')->name('admin.logs.file');
+  Route::post('/logs/{log}/clear', 'LogsController@clear')->name('admin.logs.clear');
 
   Route::group(['namespace' => 'Blog', 'prefix' => 'blog'], function() {
     Route::get('/', 'IndexController@index')->name('admin.blog.index');

@@ -35,6 +35,12 @@
                           <x-dropdown-link :href="route('admin.logsNotFound')">
                             <x-bladewind.icon name="book-open" class="mr-2" /> {{ __('Лог 404 ошибок') }}
                           </x-dropdown-link>
+                          <x-dropdown-link :href="route('admin.logs.file', ['log' => 'laravel'])">
+                            <x-bladewind.icon name="document-text" class="mr-2" /> {{ __('Laravel лог') }}
+                          </x-dropdown-link>
+                          <x-dropdown-link :href="route('admin.logs.file', ['log' => 'worker'])">
+                            <x-bladewind.icon name="queue-list" class="mr-2" /> {{ __('Worker лог') }}
+                          </x-dropdown-link>
                           <x-dropdown-link :href="route('admin.settings.editFile', ['file' => 'env'])">
                             <x-bladewind.icon name="command-line" class="mr-2" /> {{ __('Редактор .env файла') }}
                           </x-dropdown-link>
