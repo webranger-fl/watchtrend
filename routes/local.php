@@ -13,11 +13,14 @@ Route::get('/_local/devices/{slug:slug}/{device?}', function (string $slug, ?str
         'phone' => 'DEVICE_PHONE',
     ];
     $deviceType = $devices[$device ?? 'desktop'] ?? $device;
+    $fromDate = new \DateTime($key->stat->date);
+    $fromDate->setTime(12, 34, 56);
+    $fromDate = $fromDate->format('Y-m-d\TH:i:sP');
 
     $payload = [
         'phrase' => $key->phrase,
         'period' => 'PERIOD_MONTHLY',
-        'fromDate' => $key->stat->date,
+        'fromDate' => $fromDate,
         'folderId' => 'b1g1gli0dfev7nrvm0bs',
         'devices' => [$deviceType],
     ];

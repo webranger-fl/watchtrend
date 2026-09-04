@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\WordstatPhraseStat;
 use Carbon\Carbon;
+use DateTime;
 
 class FetchDevicesData implements ShouldQueue
 {
@@ -35,6 +36,10 @@ class FetchDevicesData implements ShouldQueue
             throw new \RuntimeException('No monthly statistics found for phrase ' . $this->key->id);
         }
 
+        $fromDate = new DateTime($this->key->stat->date);
+        $fromDate->setTime(12, 34, 56);
+        $fromDate = $fromDate->format('Y-m-d\TH:i:sP');
+
         foreach([
           'desktop' => 'DEVICE_DESKTOP',
           'tablet' => 'DEVICE_TABLET',
@@ -43,8 +48,7 @@ class FetchDevicesData implements ShouldQueue
         $req = Http::wordstatAPI()->post("/dynamics", [
         'phrase' => $this->key->phrase,
         'period' => 'PERIOD_MONTHLY',
-        //'fromDate' => $fromDate,
-        'fromDate' => $this->key->stat->date,
+        'fromDate' => $fromDate,
         'folderId' => 'b1g1gli0dfev7nrvm0bs',
         'devices' => [$deviceType]
         ]);
