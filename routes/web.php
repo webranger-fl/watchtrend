@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Log;
 
 require __DIR__ . '/web/admin.php';
 
+if (app()->environment('local')) {
+  require __DIR__ . '/local.php';
+}
+
 /*Route::get('/', function () {
     return view('welcome');
 });*/
