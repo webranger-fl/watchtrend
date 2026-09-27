@@ -8,6 +8,28 @@ class WordstatPhrase extends Model
 {
    protected $guarded = [];
 
+   public static function resolveSlug(string $slug, mixed $id = null): ?self
+   {
+     if($id !== null) {
+       return self::where('slug', $slug)->whereKey($id)->first();
+     }
+
+     $phrases = self::where('slug', $slug)->orderBy('id')->get();
+
+     return $phrases->firstWhere('phrase', $slug) ?? $phrases->first();
+   }
+
+   public function keyRouteParameters(): array
+   {
+     $parameters = ['slug' => $this->slug];
+
+     if($this->phrase !== $this->slug && self::where('slug', $this->slug)->count() > 1) {
+       $parameters['id'] = $this->id;
+     }
+
+     return $parameters;
+   }
+
    protected $casts = [
      'ai_analyzed_at' => 'datetime',
    ];

@@ -47,7 +47,7 @@
 
       <div class="flex mt-2 gap-2 flex-wrap justify-center">
         @if($showUpdate)
-        <form class="flex justify-center" method="POST" action="{{route('key.update', $key->slug)}}">
+        <form class="flex justify-center" method="POST" action="{{route('key.update', $key->keyRouteParameters())}}">
           @csrf
           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[250px]"
           type="submit"
@@ -61,7 +61,7 @@
         @endif
 
         @if(!$hasDevicesStats)
-        <form class="flex justify-center" method="POST" action="{{route('devices', $key->slug)}}">
+        <form class="flex justify-center" method="POST" action="{{route('devices', $key->keyRouteParameters())}}">
           @csrf
           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[250px]" 
           type="submit"
@@ -74,6 +74,12 @@
         </form>
         @endif
 
+        <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2"
+          href="https://wordstat.yandex.ru/?region=all&amp;view=table&amp;words={{ urlencode($key->phrase) }}"
+          target="_blank" rel="nofollow noreferer">
+          Wordstat Яндекса
+        </a>
+
         <button class="share_btn inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
         [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90
@@ -83,7 +89,7 @@
       </button>
 
       @auth
-      <form class="flex justify-center" method="POST" action="{{route('key.analyze', $key->slug)}}">
+      <form class="flex justify-center" method="POST" action="{{route('key.analyze', $key->keyRouteParameters())}}">
         @csrf
         <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 min-w-[250px]"
         type="submit"

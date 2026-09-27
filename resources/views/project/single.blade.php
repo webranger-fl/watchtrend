@@ -48,7 +48,7 @@
       <h2 class="text-2xl font-semibold">Ключевые фразы</h2>
       <div class="flex flex-wrap gap-3">
         @foreach($project->phrases as $ph)
-        <a href="{{route('key', $ph->slug)}}" target="_blank" class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <a href="{{route('key', $ph->keyRouteParameters())}}" target="_blank" class="rounded-lg border bg-card text-card-foreground shadow-sm">
           <div class="p-6 pt-6">
             <div class="flex items-center justify-between">
               <span class="text-lg">{{$ph->phrase}}</span>

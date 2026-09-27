@@ -132,7 +132,7 @@
           class="flex flex-wrap justify-center gap-3 p-6 {{--bg-card/50 backdrop-blur-sm rounded-2xl border border-border--}}"
         >
         @foreach($trends as $t)
-          <a href="{{route('key', $t->slug)}}"
+          <a href="{{route('key', $t->keyRouteParameters())}}"
             class="inline-flex items-center rounded-full border font-semibold focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-lg px-4 py-2 cursor-pointer transition-all hover:scale-110 hover:shadow-lg hover:shadow-primary/20 hover:border-primary/50"
           >
             {{$t->phrase}}

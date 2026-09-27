@@ -17,8 +17,12 @@ class KeyController extends Controller
     public function index(Request $req)
     {
       //dd($req->slug);
-      $key = WordstatPhrase::where(['slug' => $req->slug])->with('stat')->with('stats')->first();
+      $key = WordstatPhrase::resolveSlug($req->slug, $req->query('id'));
       if(!$key) abort(404);
+      if(!$req->query->has('id') && WordstatPhrase::where('slug', $key->slug)->count() > 1 && $key->phrase !== $key->slug) {
+        return redirect()->route('key', $key->keyRouteParameters());
+      }
+      $key->load('stat', 'stats');
       //$key->setRelation('stats', $key->stats()->orderBy('date')->limit(18)->get());
       //dd($key->stats);
       $firstMonthStat = $key->stats[0];
@@ -58,27 +62,30 @@ class KeyController extends Controller
 
     public function update(Request $req)
     {
-      $key = WordstatPhrase::where(['slug' => $req->slug])->with('stats')->first();
+      $key = WordstatPhrase::resolveSlug($req->slug, $req->query('id'));
       if(!$key) abort(404);
+      $key->load('stats');
 
       $lastMonthStat = $key->stats->sortBy('date')->last();
-      if(!$lastMonthStat) return redirect()->route('key', ['slug' => $key->slug]);
+      if(!$lastMonthStat) return redirect()->route('key', $key->keyRouteParameters());
 
       $monthsBehind = (int)date('Y') * 12 + (int)date('n') - ((int)date('Y', strtotime($lastMonthStat->date)) * 12 + (int)date('n', strtotime($lastMonthStat->date)));
       if($monthsBehind < 3) {
-        return redirect()->route('key', ['slug' => $key->slug])->with('msg', 'Обновление пока не требуется.');
+        return redirect()->route('key', $key->keyRouteParameters())->with('msg', 'Обновление пока не требуется.');
       }
 
       $fromDate = date('Y-m-01\T12:34:56+03:00', strtotime($lastMonthStat->date));
 
       \App\Jobs\FetchPhraseData::dispatch($key, $fromDate);
 
-      return redirect()->route('key', ['slug' => $key->slug])->with('msg', 'Данные обновляются. Обновите страницу через 5-10 секунд.');
+      return redirect()->route('key', $key->keyRouteParameters())->with('msg', 'Данные обновляются. Обновите страницу через 5-10 секунд.');
     }
 
     public function data(Request $req)
     {
-      $key = WordstatPhrase::where(['slug' => $req->slug])->with('stats')->with('stat')->first();
+      $key = WordstatPhrase::resolveSlug($req->slug, $req->query('id'));
+      if(!$key) abort(404);
+      $key->load('stats', 'stat');
 
       $stats = [];
       foreach($key->stats as $stat) {
@@ -91,7 +98,7 @@ class KeyController extends Controller
 
     public function analyze(Request $req)
     {
-      $key = WordstatPhrase::where(['slug' => $req->slug])->with('stats')->first();
+      $key = WordstatPhrase::resolveSlug($req->slug, $req->query('id'));
       if(!$key) abort(404);
 
       $key->load('stats');
@@ -117,19 +124,19 @@ class KeyController extends Controller
       ]);
 
       if(!$response->successful()) {
-        return redirect()->route('key', ['slug' => $key->slug])->with('msg', 'Не удалось получить ИИ-анализ: ошибка API (' . $response->status() . ').');
+        return redirect()->route('key', $key->keyRouteParameters())->with('msg', 'Не удалось получить ИИ-анализ: ошибка API (' . $response->status() . ').');
       }
 
       $body = $response->json();
       $text = $body['choices'][0]['message']['content'] ?? null;
       if(!$text) {
-        return redirect()->route('key', ['slug' => $key->slug])->with('msg', 'Не удалось получить ИИ-анализ: пустой ответ.');
+        return redirect()->route('key', $key->keyRouteParameters())->with('msg', 'Не удалось получить ИИ-анализ: пустой ответ.');
       }
 
       $key->ai_analysis = trim($text);
       $key->ai_analyzed_at = now();
       $key->save();
 
-      return redirect()->route('key', ['slug' => $key->slug])->with('msg', 'ИИ-анализ тренда успешно получен.');
+      return redirect()->route('key', $key->keyRouteParameters())->with('msg', 'ИИ-анализ тренда успешно получен.');
     }
 }

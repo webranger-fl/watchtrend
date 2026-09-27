@@ -2,7 +2,10 @@ initChart()
 
 async function initChart() {
   let slug = window.location.pathname.replace('/key/', '')
-  let response = await fetch(`/data/${slug}`)
+  const query = new URLSearchParams(window.location.search)
+  const keyId = query.get('id')
+  const dataUrl = `/data/${slug}${keyId ? `?id=${encodeURIComponent(keyId)}` : ''}`
+  let response = await fetch(dataUrl)
   let data
 
    if (response.ok) { // если HTTP-статус в диапазоне 200-299

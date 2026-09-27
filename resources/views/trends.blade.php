@@ -16,7 +16,7 @@
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300"
     >
     @foreach($stats as $s)
-      <a href="{{route('key', $s->phrase->slug)}}" target="_blank"
+      <a href="{{route('key', $s->phrase->keyRouteParameters())}}" target="_blank"
         class="rounded-lg border text-card-foreground shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border bg-card/50 backdrop-blur-sm"
       >
         <div class="flex flex-col space-y-1.5 p-6">

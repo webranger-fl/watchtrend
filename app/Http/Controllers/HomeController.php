@@ -43,19 +43,14 @@ class HomeController extends Controller
 
       //dd($req->keyword);
       $keyword = $req->keyword;
-      $slug = translit($keyword);
-
-      $key = WordstatPhrase::where(['phrase' => $keyword])->first();
+      $key = WordstatPhrase::where('phrase', $keyword)->get()->firstWhere('phrase', $keyword);
       // пока редиректим, позже можно обновлять стату динамики
       if($key) {
-        //dd('exist');
-        return redirect()->route('key', ['slug' => $slug]);
+        return redirect()->route('key', $key->keyRouteParameters());
       }
 
-      DB::transaction(function () use ($keyword) {
-        //global $slug;
+      $key = DB::transaction(function () use ($keyword) {
         $phrase = WordstatPhrase::create(['phrase' => $keyword, 'slug' => translit($keyword)]);
-        $slug = $phrase->slug;
         // захватываем больше месяцев
         $fromDate = (new DateTime())->modify('-500 days');
         $fromDate->setDate($fromDate->format('Y'), $fromDate->format('m'), 1);
@@ -100,21 +95,23 @@ class HomeController extends Controller
           }
           //session()->put("guest_request_limit_analyze", true);
         }
-        //return redirect()->route('key', ['slug' => $slug]);
+        return $phrase;
       });
 
-      return redirect()->route('key', ['slug' => $slug]);
+      return redirect()->route('key', $key->keyRouteParameters());
     }
 
     function devices(Request $req) {
       $slug = $req->slug;
-      $key = WordstatPhrase::where(['slug' => $slug])->with('stat')->first();
+      $key = WordstatPhrase::resolveSlug($slug, $req->query('id'));
+      if(!$key) abort(404);
+      $key->load('stat');
       if($key->stat && $key->stat->desktop) {
-         return redirect()->route('key', ['slug' => $slug]);
+         return redirect()->route('key', $key->keyRouteParameters());
       }
       // тут уходит 3 запроса чтобы собрать все данные
       \App\Jobs\FetchDevicesData::dispatch($key);
-      return redirect()->route('key', ['slug' => $slug])->with('msg', 'Данные по устройствам скоро отобразятся. Обновите страницу через 5-10 секунд.');
+      return redirect()->route('key', $key->keyRouteParameters())->with('msg', 'Данные по устройствам скоро отобразятся. Обновите страницу через 5-10 секунд.');
 
 
       /*$fromDate = date('Y-m-d', time() - 86400 * 365);
